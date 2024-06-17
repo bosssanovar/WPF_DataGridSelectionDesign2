@@ -12,29 +12,62 @@ namespace WpfApp1
     class SelectionGuide : Control
     {
         public ScrollViewer? ScrollViewer { get; set; }
-        public List<Square> Objects { get; } = new List<Square>();
+
+        Rect rect;
+        public Rect Rect
+        {
+            get { return rect; }
+            set
+            {
+                rect = value;
+
+                Visibility = Visibility.Visible;
+
+                InvalidateVisual();
+            }
+        }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
 
-            if (ScrollViewer == null || Objects == null)
-            {
-                return;
-            }
+            var blackSolidBrush = new SolidColorBrush(Color.FromRgb(0xec, 0xa1, 0x2a));
+            var pen = new Pen(blackSolidBrush, 3);
+            pen.Freeze();
+            double halfPenWidth = pen.Thickness / 2;
 
-            // ScrollViewerで表示されている領域
-            var viewRect = new Rect(ScrollViewer.HorizontalOffset, ScrollViewer.VerticalOffset, ScrollViewer.ViewportWidth, ScrollViewer.ViewportHeight);
+            Rect rangeBorderRect = rect;
+            rangeBorderRect.Offset(-1, -1);
 
-            foreach (Square s in Objects)
+            GuidelineSet guidelines = new GuidelineSet();
+            guidelines.GuidelinesX.Add(rangeBorderRect.Left + halfPenWidth);
+            guidelines.GuidelinesX.Add(rangeBorderRect.Right + halfPenWidth);
+            guidelines.GuidelinesY.Add(rangeBorderRect.Top + halfPenWidth);
+            guidelines.GuidelinesY.Add(rangeBorderRect.Bottom + halfPenWidth);
+
+            Point p1 = rangeBorderRect.BottomRight;
+            p1.Offset(0, +1);
+            guidelines.GuidelinesY.Add(p1.Y + halfPenWidth);
+
+            Point p2 = rangeBorderRect.BottomRight;
+            p2.Offset(+1, 0);
+            guidelines.GuidelinesX.Add(p2.X + halfPenWidth);
+
+            drawingContext.PushGuidelineSet(guidelines);
+
+            var geometry = new StreamGeometry();
+            using (StreamGeometryContext ctx = geometry.Open())
             {
-                var rect = new Rect(Canvas.GetLeft(s), Canvas.GetTop(s), s.Width, s.Height);
-                // 四角形が表示領域内に含まれる場合のみ描画する
-                if (viewRect.IntersectsWith(rect))
-                {
-                    drawingContext.DrawRectangle(Brushes.Black, new Pen(Brushes.Black, 1), rect);
-                }
+                ctx.BeginFigure(p1, true, false);
+                ctx.LineTo(rangeBorderRect.TopRight, true, false);
+                ctx.LineTo(rangeBorderRect.TopLeft, true, false);
+                ctx.LineTo(rangeBorderRect.BottomLeft, true, false);
+                ctx.LineTo(p2, true, false);
             }
+            geometry.Freeze();
+            drawingContext.DrawGeometry(null, pen, geometry);
+
+            drawingContext.Pop();
         }
     }
 }

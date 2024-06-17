@@ -378,16 +378,17 @@ namespace WpfApp1
 
         private void UpdateSelectionGuide(List<RowColumnIndex> indexes)
         {
-            selectionGuide.Objects.Clear();
-
-            foreach(var index in indexes)
+            if(!indexes.Any())
             {
-                Square square = CreateSelectionGuide(index.RowIndex, index.ColumnIndex);
-
-                selectionGuide.Objects.Add(square);
+                selectionGuide.Visibility = Visibility.Collapsed;
+                return;
             }
 
-            selectionGuide.InvalidateVisual();
+            var topLeft = new Point(indexes.First().ColumnIndex * 28 + 3, indexes.First().RowIndex * 28 + 3);
+            var buttomRight = new Point((indexes.Last().ColumnIndex + 1) * 28 - 3, (indexes.Last().RowIndex + 1) * 28 - 3);
+            var rect = new Rect(topLeft, buttomRight);
+
+            selectionGuide.Rect = rect;
         }
 
         private static Square CreateSelectionGuide(int rowIndex, int columnIndex)
@@ -542,126 +543,9 @@ namespace WpfApp1
 
         #endregion
 
-        private FillHandleAdorner? fillHandleAdorner = null;
-
         private void grid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            var datagrid = (System.Windows.Controls.DataGrid)sender;
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(datagrid);
-            if (datagrid.SelectedCells.Any())
-            {
-                DataGridCellInfo firstCellInfo = datagrid.SelectedCells.First();
-                FrameworkElement firstElt = firstCellInfo.Column.GetCellContent(firstCellInfo.Item);
-
-                DataGridCellInfo lastCellInfo = datagrid.SelectedCells.Last();
-                FrameworkElement lastElt = lastCellInfo.Column.GetCellContent(lastCellInfo.Item);
-
-                if (firstElt != null && lastElt != null)
-                {
-                    var firstcell = (DataGridCell)firstElt.Parent;
-                    var lastCell = (DataGridCell)lastElt.Parent;
-                    Point topLeft = datagrid.PointFromScreen(firstcell.PointToScreen(new Point(0, 0)));
-                    Point bottomRight = datagrid.PointFromScreen(lastCell.PointToScreen(new Point(lastCell.ActualWidth, lastCell.ActualHeight)));
-                    var rect = new Rect(topLeft, bottomRight);
-                    if (fillHandleAdorner == null)
-                    {
-                        fillHandleAdorner = new FillHandleAdorner(datagrid, rect);
-                        adornerLayer.Add(fillHandleAdorner);
-                    }
-                    else
-                        fillHandleAdorner.Rect = rect;
-                }
-            }
-            else
-            {
-                adornerLayer.Remove(fillHandleAdorner);
-                fillHandleAdorner = null;
-            }
-
             UpdateSelectionGuide(DataGridHelper.GetSelectedCellsIndex(grid));
-        }
-    }
-
-    internal class FillHandleAdorner : Adorner
-    {
-        Rect rect;
-
-        readonly VisualCollection visualChildren;
-
-        System.Windows.Controls.DataGrid dataGrid;
-
-        public Rect Rect
-        {
-            get { return rect; }
-            set
-            {
-                rect = value;
-                InvalidateVisual();
-            }
-        }
-
-        public FillHandleAdorner(UIElement adornedElement, Rect rect)
-            : base(adornedElement)
-        {
-            dataGrid = (System.Windows.Controls.DataGrid)adornedElement;
-            Rect = rect;
-
-            visualChildren = new VisualCollection(this);
-            var border = new FrameworkElementFactory(typeof(Border));
-            border.SetValue(Border.BackgroundProperty, new SolidColorBrush(Color.FromRgb(0xec, 0xa1, 0x2a)));
-        }
-
-        protected override int VisualChildrenCount
-        {
-            get { return visualChildren.Count; }
-        }
-
-        protected override Visual GetVisualChild(int index)
-        {
-            return visualChildren[index];
-        }
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            base.OnRender(drawingContext);
-
-            var blackSolidBrush = new SolidColorBrush(Color.FromRgb(0xec, 0xa1, 0x2a));
-            var pen = new Pen(blackSolidBrush, 3);
-            pen.Freeze();
-            double halfPenWidth = pen.Thickness / 2;
-
-            Rect rangeBorderRect = rect;
-            rangeBorderRect.Offset(-1, -1);
-
-            GuidelineSet guidelines = new GuidelineSet();
-            guidelines.GuidelinesX.Add(rangeBorderRect.Left + halfPenWidth);
-            guidelines.GuidelinesX.Add(rangeBorderRect.Right + halfPenWidth);
-            guidelines.GuidelinesY.Add(rangeBorderRect.Top + halfPenWidth);
-            guidelines.GuidelinesY.Add(rangeBorderRect.Bottom + halfPenWidth);
-
-            Point p1 = rangeBorderRect.BottomRight;
-            p1.Offset(0, +1);
-            guidelines.GuidelinesY.Add(p1.Y + halfPenWidth);
-
-            Point p2 = rangeBorderRect.BottomRight;
-            p2.Offset(+1, 0);
-            guidelines.GuidelinesX.Add(p2.X + halfPenWidth);
-
-            drawingContext.PushGuidelineSet(guidelines);
-
-            var geometry = new StreamGeometry();
-            using (StreamGeometryContext ctx = geometry.Open())
-            {
-                ctx.BeginFigure(p1, true, false);
-                ctx.LineTo(rangeBorderRect.TopRight, true, false);
-                ctx.LineTo(rangeBorderRect.TopLeft, true, false);
-                ctx.LineTo(rangeBorderRect.BottomLeft, true, false);
-                ctx.LineTo(p2, true, false);
-            }
-            geometry.Freeze();
-            drawingContext.DrawGeometry(null, pen, geometry);
-
-            drawingContext.Pop();
         }
     }
 }
