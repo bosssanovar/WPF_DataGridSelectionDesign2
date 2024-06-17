@@ -289,6 +289,7 @@ namespace WpfApp1
             Canvas.SetBottom(map, 0);
 
             squares.InvalidateVisual();
+            selectionGuide.InvalidateVisual();
             MoveScroll();
         }
 
@@ -312,6 +313,7 @@ namespace WpfApp1
                 previewScroll.Visibility = Visibility.Visible;
 
                 squares.InvalidateVisual();
+                selectionGuide.InvalidateVisual();
 
                 e.Handled = true;
             }
@@ -436,6 +438,7 @@ namespace WpfApp1
         private void previewScroll_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             squares.InvalidateVisual();
+            selectionGuide.InvalidateVisual();
 
             MoveScroll();
         }
