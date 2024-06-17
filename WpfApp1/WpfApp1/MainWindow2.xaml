@@ -39,7 +39,7 @@
                   VirtualizingPanel.ScrollUnit="Pixel" MaxWidth="2000" MaxHeight="1200"
                   HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"
                   BorderThickness="0"
-                  SelectedCellsChanged="grid_SelectedCellsChanged" PreviewMouseDown="grid_PreviewMouseDown">
+                  SelectedCellsChanged="grid_SelectedCellsChanged" PreviewMouseLeftButtonDown="grid_PreviewMouseDown">
             <DataGrid.InputBindings>
                 <KeyBinding Gesture="Ctrl+A" Command="ApplicationCommands.NotACommand"/>
             </DataGrid.InputBindings>
