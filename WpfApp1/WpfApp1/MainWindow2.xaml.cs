@@ -73,6 +73,7 @@ namespace WpfApp1
         {
             var scrollList = new List<ScrollViewer>();
             scrollList.Add(previewScroll);
+            scrollList.Add(selectionGuideScroll);
             var gridScroll = DataGridHelper.GetScrollViewer(grid);
             if (gridScroll is not null)
             {
@@ -390,10 +391,10 @@ namespace WpfApp1
         private static Square CreateSelectionGuide(int rowIndex, int columnIndex)
         {
             var square = new Square();
-            square.Width = 16;
-            square.Height = 16;
-            Canvas.SetTop(square, 28 * rowIndex + 6);
-            Canvas.SetLeft(square, 28 * columnIndex + 6);
+            square.Width = 10;
+            square.Height = 10;
+            Canvas.SetTop(square, 28 * rowIndex + 9);
+            Canvas.SetLeft(square, 28 * columnIndex + 9);
             return square;
         }
 

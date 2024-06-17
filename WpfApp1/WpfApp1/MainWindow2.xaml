@@ -72,16 +72,6 @@
             </DataGrid.Style>
         </DataGrid>
 
-        <!--選択枠線ビュー-->
-        <Border Grid.Row="1" Margin="5, 5, 0, 0" BorderBrush="Black" BorderThickness="1" IsHitTestVisible="False">
-            <ScrollViewer x:Name="selectionGuideScroll"
-                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
-                <Canvas Width="17920" Height="17920" Background="Transparent">
-                    <local:SelectionGuide x:Name="selectionGuide"/>
-                </Canvas>
-            </ScrollViewer>
-        </Border>
-
         <!--閲覧ビュー-->
         <Border Grid.Row="1" Margin="5, 5, 0, 0" BorderBrush="Black" BorderThickness="1">
             <ScrollViewer x:Name="previewScroll" Visibility="Hidden"
@@ -89,6 +79,16 @@
                       ScrollChanged="previewScroll_ScrollChanged">
                 <Canvas x:Name="previewCanvas" Width="17920" Height="17920" Background="#2c2d2f">
                     <local:Squares x:Name="squares"/>
+                </Canvas>
+            </ScrollViewer>
+        </Border>
+
+        <!--選択枠線ビュー-->
+        <Border Grid.Row="1" Margin="5, 5, 0, 0" BorderBrush="Black" BorderThickness="1" IsHitTestVisible="False">
+            <ScrollViewer x:Name="selectionGuideScroll"
+                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                <Canvas Width="17920" Height="17920" Background="Transparent">
+                    <local:SelectionGuide x:Name="selectionGuide"/>
                 </Canvas>
             </ScrollViewer>
         </Border>
