@@ -384,8 +384,8 @@ namespace WpfApp1
                 return;
             }
 
-            var topLeft = new Point(indexes.First().ColumnIndex * 28 + 3, indexes.First().RowIndex * 28 + 3);
-            var buttomRight = new Point((indexes.Last().ColumnIndex + 1) * 28 - 3, (indexes.Last().RowIndex + 1) * 28 - 3);
+            var topLeft = new Point(indexes.First().ColumnIndex * 28 + 2, indexes.First().RowIndex * 28 + 3);
+            var buttomRight = new Point((indexes.Last().ColumnIndex + 1) * 28 - 3, (indexes.Last().RowIndex + 1) * 28 - 2);
             var rect = new Rect(topLeft, buttomRight);
 
             selectionGuide.Rect = rect;
