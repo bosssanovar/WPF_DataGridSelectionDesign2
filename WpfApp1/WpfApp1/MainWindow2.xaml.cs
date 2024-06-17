@@ -547,5 +547,10 @@ namespace WpfApp1
         {
             UpdateSelectionGuide(DataGridHelper.GetSelectedCellsIndex(grid));
         }
+
+        private void grid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            grid.UnselectAllCells();
+        }
     }
 }
