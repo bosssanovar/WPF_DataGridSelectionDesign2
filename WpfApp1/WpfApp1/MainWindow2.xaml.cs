@@ -96,8 +96,8 @@ namespace WpfApp1
                 binding.Converter = converter;
 
                 var factory = new FrameworkElementFactory(typeof(Ellipse));
-                factory.SetValue(Ellipse.HeightProperty, 15.0);
-                factory.SetValue(Ellipse.WidthProperty, 15.0);
+                factory.SetValue(Ellipse.HeightProperty, 14.0);
+                factory.SetValue(Ellipse.WidthProperty, 14.0);
                 factory.SetValue(Ellipse.FillProperty, new SolidColorBrush(Color.FromRgb(0xe2, 0xaf, 0x42)));
                 factory.SetBinding(Ellipse.VisibilityProperty, binding);
 
