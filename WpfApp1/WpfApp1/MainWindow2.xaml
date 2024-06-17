@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="600" d:Width="600"
+        Title="MainWindow" Height="800" Width="1200"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-        WindowState="Maximized" SizeChanged="Window_SizeChanged"
+        SizeChanged="Window_SizeChanged"
         Background="Black">
     <Grid x:Name="gridPanel" Margin="5">
         <Grid.RowDefinitions>
