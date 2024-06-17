@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static System.Net.Mime.MediaTypeNames;
+using static WpfApp1.DataGridHelper;
 
 namespace WpfApp1
 {
@@ -56,6 +57,7 @@ namespace WpfApp1
             InitColumns(InitCulumnCount);
 
             squares.ScrollViewer = previewScroll;
+            selectionGuide.ScrollViewer = selectionGuideScroll;
 
             grid.Visibility = Visibility.Visible;
 
@@ -369,6 +371,34 @@ namespace WpfApp1
 
         #endregion
 
+        #region 選択枠線
+
+        private void UpdateSelectionGuide(List<RowColumnIndex> indexes)
+        {
+            selectionGuide.Objects.Clear();
+
+            foreach(var index in indexes)
+            {
+                Square square = CreateSelectionGuide(index.RowIndex, index.ColumnIndex);
+
+                selectionGuide.Objects.Add(square);
+            }
+
+            selectionGuide.InvalidateVisual();
+        }
+
+        private static Square CreateSelectionGuide(int rowIndex, int columnIndex)
+        {
+            var square = new Square();
+            square.Width = 16;
+            square.Height = 16;
+            Canvas.SetTop(square, 28 * rowIndex + 6);
+            Canvas.SetLeft(square, 28 * columnIndex + 6);
+            return square;
+        }
+
+        #endregion
+
         #region ダミー表示
 
         private void UpdatePreview()
@@ -543,6 +573,8 @@ namespace WpfApp1
                 adornerLayer.Remove(fillHandleAdorner);
                 fillHandleAdorner = null;
             }
+
+            UpdateSelectionGuide(DataGridHelper.GetSelectedCellsIndex(grid));
         }
     }
 
